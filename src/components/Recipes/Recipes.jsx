@@ -10,7 +10,7 @@ const Recipes = () => {
       <h3 className="mb-4 font-semibold text-lg">Recipes: {allRecipes.length}</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {
-                allRecipes.map((recipe) => <Recipe recipe={recipe}></Recipe>)
+                allRecipes.map((recipe) => <Recipe key={recipe.id} recipe={recipe}></Recipe>)
             }
       </div>
     </div>

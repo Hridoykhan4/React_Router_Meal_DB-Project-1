@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 // import { useLoaderData } from "react-router-dom";
 
 const MealDBRecipes = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [recipes, setRecipes] = useState([]);
-  //   const recipeCategories = useLoaderData();
+  const [tempRecipe, setTempRecipe] = useState([]);
 
-    const nav = useNavigate()
+  const nav = useNavigate();
 
   const fetchMeal = async (query = "") => {
     const res = await fetch(
@@ -16,6 +16,7 @@ const MealDBRecipes = () => {
 
     const data = await res.json();
     setRecipes(data.meals);
+    setTempRecipe(data.meals);
   };
 
   useEffect(() => {
@@ -24,9 +25,20 @@ const MealDBRecipes = () => {
 
   useEffect(() => {
     if (searchTerm.trim()) {
-      fetchMeal(searchTerm);
+      const target = searchTerm.toLowerCase();
+      const filterItem = [];
+      for (const e of tempRecipe) {
+        if (e.strMeal.toLowerCase().includes(target)) {
+          filterItem.push(e);
+        }
+      }
+      if (filterItem) {
+        setRecipes(filterItem);
+      }
+    } else {
+      setRecipes(tempRecipe);
     }
-  }, [searchTerm]);
+  }, [searchTerm, tempRecipe]);
 
   const youtubeUrl = "https://www.youtube.com/watch?v=GSvFVBpqMKI";
 
@@ -43,8 +55,8 @@ const MealDBRecipes = () => {
       </fieldset>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5 lg:grid-cols-3">
-        {recipes.map((recipe) => (
-          <div className="card bg-base-100 flex flex-col  shadow-sm">
+        {recipes.map((recipe, i) => (
+          <div key={i} className="card bg-base-100 flex flex-col  shadow-sm">
             <figure className="mb-3">
               <img src={recipe?.strMealThumb} alt="Shoes" />
             </figure>
@@ -57,7 +69,12 @@ const MealDBRecipes = () => {
               </p>
             </div>
             <div className="card-actions justify-end pb-3">
-              <button onClick={() => nav(`/meal/${recipe.idMeal}`)} className="btn btn-primary">Show Details</button>
+              <button
+                onClick={() => nav(`/meal/${recipe.idMeal}`)}
+                className="btn btn-primary"
+              >
+                Show Details
+              </button>
             </div>
           </div>
         ))}

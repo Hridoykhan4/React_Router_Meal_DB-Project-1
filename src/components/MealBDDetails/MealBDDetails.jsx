@@ -1,30 +1,39 @@
 import { useLoaderData, useNavigate } from "react-router-dom";
+import { addToLS } from "../../utils/addToLs";
 
 const MealBDDetails = () => {
   const mealDetail = useLoaderData();
   const mealData = mealDetail.meals[0];
-  const nav = useNavigate()
+  const nav = useNavigate();
+  const handleAddToBookMark = (id) => {
+    const parseId = parseInt(id);
+    addToLS(parseId);
+  };
   return (
     <div>
-      <div className="card bg-base-100 max-w-96 shadow-sm">
+      <div className="card relative bg-base-100 max-w-96 shadow-sm">
         <figure>
-          <img
-            src={mealData?.strMealThumb}
-            alt="Shoes"
-          />
+          <img src={mealData?.strMealThumb} alt="Shoes" />
         </figure>
         <div className="card-body">
           <h2 className="card-title">{mealData?.strMeal}</h2>
           <p>
-           <span className="font-semibold underline text-lg">Process:</span> <br />  {mealData?.strInstructions}
+            <span className="font-semibold underline text-lg">Process:</span>{" "}
+            <br /> {mealData?.strInstructions}
           </p>
           <div onClick={() => nav(-1)} className="card-actions justify-end">
-            <button  className="btn btn-primary">Back To Recipes</button>
+            <button className="btn btn-primary">Back To Recipes</button>
           </div>
           <div onClick={() => nav(`/`)} className="card-actions justify-end">
-            <button  className="btn btn-primary">Home</button>
+            <button className="btn btn-primary">Home</button>
           </div>
         </div>
+        <button
+          onClick={() => handleAddToBookMark(mealData.idMeal)}
+          className="absolute -top-2 -right-14 btn btn-primary"
+        >
+          Add To BookMark
+        </button>
       </div>
     </div>
   );
